@@ -1,0 +1,12 @@
+name: DropsEditor
+version: 1.0
+load: POSTWORLD
+author: cubito_verde
+main: com.gmail.cubitverde.DropsEditor.DropsEditor
+prefix: DropsEditor
+api-version: 1.17
+
+commands:
+  dropseditor:
+    permission: dropseditor.admin
+    aliases: deditor
