@@ -1,5 +1,5 @@
 name: DropsEditor
-version: 1.0
+version: 0.1
 load: POSTWORLD
 author: cubito_verde
 main: com.gmail.cubitverde.DropsEditor.DropsEditor
