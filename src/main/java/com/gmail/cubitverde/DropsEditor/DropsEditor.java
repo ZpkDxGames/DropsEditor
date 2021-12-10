@@ -7,12 +7,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DropsEditor extends JavaPlugin {
     static DropsEditor plugin;
     static Map<String, Material> mobIcons = new HashMap<>();
+    static List<ObjMob> editedMobs = new ArrayList<>();
+    static ObjDrop defaultDrop = new ObjDrop();
+    static ObjConditions defaultConditions = new ObjConditions();
 
     @Override
     public void onEnable() {
@@ -20,6 +25,8 @@ public class DropsEditor extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new LisInventory(), this);
 
         UtiSetup.setupMobIcons(plugin.getServer().getVersion());
+        UtiSetup.setupDefaultConditions();
+        UtiSetup.setupDefaultDrop();
     }
 
     @Override

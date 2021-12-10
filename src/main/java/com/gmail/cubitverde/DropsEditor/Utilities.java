@@ -2,11 +2,13 @@ package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -72,7 +74,9 @@ public class Utilities {
 
     static LinkedList<ItemStack> GetMobItemsList() {
         LinkedList<ItemStack> list = new LinkedList<>();
-        for (String name : DropsEditor.mobIcons.keySet()) {
+        LinkedList<String> namesList = new LinkedList<>(DropsEditor.mobIcons.keySet());
+        Collections.sort(namesList);
+        for (String name : namesList) {
             list.add(CreateNamedItem(DropsEditor.mobIcons.get(name), ChatColor.GREEN + name));
         }
         return list;
@@ -114,5 +118,35 @@ public class Utilities {
                 inventory.setItem(inventorySize - 1, CreateNamedItem(Material.ORANGE_STAINED_GLASS_PANE, ChatColor.GREEN + "Next page"));
             }
         }
+    }
+
+    static EntityType ConvertNameToType(String name) {
+        String convertedName = name.toUpperCase();
+        convertedName = convertedName.replace(' ', '_');
+        return EntityType.valueOf(convertedName);
+    }
+
+    static ObjMob GetObjMob(String name) {
+        EntityType type = ConvertNameToType(name);
+        for (ObjMob tempObjMob : DropsEditor.editedMobs) {
+            if (tempObjMob.getType().equals(type)) {
+                return tempObjMob;
+            }
+        }
+
+        ObjMob objMob = new ObjMob(type);
+        DropsEditor.editedMobs.add(objMob);
+        return objMob;
+    }
+
+    static void AddCornerInfoItem(Inventory inventory, EntityType type) {
+        ItemStack cornerItem = inventory.getItem(0);
+        ItemMeta cornerMeta = cornerItem.getItemMeta();
+        List<String> cornerLore = new ArrayList<>();
+        cornerLore.add(ChatColor.GRAY + "Editing mob: " + ChatColor.WHITE + type.toString());
+        cornerMeta.setLore(cornerLore);
+        cornerItem.setItemMeta(cornerMeta);
+        cornerItem.setItemMeta(cornerMeta);
+        inventory.setItem(0, cornerItem);
     }
 }

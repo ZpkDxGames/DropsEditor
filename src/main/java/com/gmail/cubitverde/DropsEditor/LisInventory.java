@@ -71,13 +71,34 @@ public class LisInventory implements Listener {
                         return;
                     }
                     default: {
+                        String mobName = clickedMeta.getDisplayName().substring(2);
+                        if (DropsEditor.mobIcons.keySet().contains(mobName)) {
+                            ObjMob objMob = Utilities.GetObjMob(mobName);
+                            player.openInventory(UtiMenus.MobSettingsMenu(objMob));
+                        }
+                        return;
+                    }
+                }
+            }
+
+            case "Mob settings": {
+                switch (clickedMeta.getDisplayName().substring(2)) {
+                    case "Go back": {
+                        player.openInventory(UtiMenus.MobsMenu(1));
+                        return;
+                    }
+                    case "": {
 
                     }
                 }
             }
 
-            case " ": {
+            case "": {
+                switch (clickedMeta.getDisplayName().substring(2)) {
+                    case "": {
 
+                    }
+                }
             }
         }
     }

@@ -1,6 +1,9 @@
 package com.gmail.cubitverde.DropsEditor;
 
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 
 public class UtiSetup {
     static void setupMobIcons(String version) {
@@ -80,5 +83,29 @@ public class UtiSetup {
             setupMobIcons("1.17");
 
         }
+    }
+
+    static void setupDefaultConditions() {
+        DropsEditor.defaultConditions.setBiome(Biome.PLAINS);
+        DropsEditor.defaultConditions.setCheckBiome(false);
+        DropsEditor.defaultConditions.setMobName("Zombie");
+        DropsEditor.defaultConditions.setCheckMobName(false);
+        DropsEditor.defaultConditions.setPermission("droppermission.get");
+        DropsEditor.defaultConditions.setCheckPermission(false);
+        DropsEditor.defaultConditions.setItemUsed(Utilities.CreateNamedItem(Material.DIAMOND_SWORD, "Drops sword"));
+        DropsEditor.defaultConditions.setCheckItemUsed(false);
+        DropsEditor.defaultConditions.setItemUsedMeta(true);
+        DropsEditor.defaultConditions.setCheckItemUsedMeta(false);
+    }
+
+    static void setupDefaultDrop() {
+        DropsEditor.defaultDrop.setItem(Utilities.CreateNamedItem(Material.STONE, "Default Item"));
+        DropsEditor.defaultDrop.setChance(0.1);
+        DropsEditor.defaultDrop.setColor(Color.GREEN);
+        DropsEditor.defaultDrop.setShape(FireworkEffect.Type.BURST);
+        DropsEditor.defaultDrop.setConditions(DropsEditor.defaultConditions);
+        DropsEditor.defaultDrop.setDefaultDrops(true);
+        DropsEditor.defaultDrop.setSpawnerDrops(false);
+        DropsEditor.defaultDrop.setEggDrops(false);
     }
 }
