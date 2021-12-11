@@ -149,4 +149,12 @@ public class Utilities {
         cornerItem.setItemMeta(cornerMeta);
         inventory.setItem(0, cornerItem);
     }
+
+    static ObjMob GetObjMobFromCorner(Inventory inventory) {
+        ItemStack cornerItem = inventory.getItem(0);
+        ItemMeta cornerMeta = cornerItem.getItemMeta();
+        List<String> cornerLore = cornerMeta.getLore();
+        String mobType = cornerLore.get(0).substring(17);
+        return GetObjMob(mobType);
+    }
 }

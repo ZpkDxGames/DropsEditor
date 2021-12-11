@@ -19,6 +19,19 @@ public class ObjConditions {
 
     }
 
+    public ObjConditions(boolean active) {
+        this.biome = DropsEditor.defaultConditions.getBiome();
+        this.checkBiome = active;
+        this.mobName = DropsEditor.defaultConditions.getMobName();
+        this.checkMobName = active;
+        this.itemUsed = DropsEditor.defaultConditions.getItemUsed();
+        this.checkItemUsed = active;
+        this.itemUsedMeta = DropsEditor.defaultConditions.getItemUsedMeta();
+        this.checkItemUsedMeta = active;
+        this.permission = DropsEditor.defaultConditions.getPermission();
+        this.checkPermission = active;
+    }
+
     public Biome getBiome() {
         return biome;
     }

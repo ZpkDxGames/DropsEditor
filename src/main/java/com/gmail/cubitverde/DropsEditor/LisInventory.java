@@ -1,6 +1,7 @@
 package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -82,13 +83,28 @@ public class LisInventory implements Listener {
             }
 
             case "Mob settings": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
                 switch (clickedMeta.getDisplayName().substring(2)) {
                     case "Go back": {
                         player.openInventory(UtiMenus.MobsMenu(1));
                         return;
                     }
-                    case "": {
-
+                    case "Toggle vanilla drops": {
+                        if (objMob.getVanillaDrops()) {
+                            objMob.setVanillaDrops(false);
+                        } else {
+                            objMob.setVanillaDrops(true);
+                        }
+                        player.openInventory(UtiMenus.MobSettingsMenu(objMob));
+                        return;
+                    }
+                    case "Toggle active worlds": {
+                        player.openInventory(UtiMenus.MobWorldsMenu(objMob));
+                        return;
+                    }
+                    case "Edit custom drops": {
+                        player.openInventory(UtiMenus.MobDropsMenu(objMob));
+                        return;
                     }
                 }
             }

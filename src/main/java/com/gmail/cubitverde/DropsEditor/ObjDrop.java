@@ -2,6 +2,7 @@ package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class ObjDrop {
