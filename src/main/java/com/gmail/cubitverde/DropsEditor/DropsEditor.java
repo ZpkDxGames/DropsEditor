@@ -18,6 +18,7 @@ public class DropsEditor extends JavaPlugin {
     static List<ObjMob> editedMobs = new ArrayList<>();
     static ObjDrop defaultDrop = new ObjDrop();
     static ObjConditions defaultConditions = new ObjConditions();
+    static int dropId = 0;
 
     @Override
     public void onEnable() {

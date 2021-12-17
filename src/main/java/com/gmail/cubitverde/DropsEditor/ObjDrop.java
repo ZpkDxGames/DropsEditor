@@ -1,25 +1,29 @@
 package com.gmail.cubitverde.DropsEditor;
 
-import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.LinkedList;
+
 public class ObjDrop {
+    int id;
     private ItemStack item;
     private double chance;
-    private Color color;
+    private String color;
     private FireworkEffect.Type shape;
+    private boolean effect;
     private boolean defaultDrops;
     private boolean spawnerDrops;
     private boolean eggDrops;
     private ObjConditions conditions;
+    private LinkedList<String> commands;
 
     public ObjDrop() {
 
     }
 
     public ObjDrop(ItemStack item) {
+        this.id = DropsEditor.dropId++;
         this.item = item;
         this.chance = DropsEditor.defaultDrop.getChance();
         this.color = DropsEditor.defaultDrop.getColor();
@@ -28,6 +32,14 @@ public class ObjDrop {
         this.defaultDrops = DropsEditor.defaultDrop.getDefaultDrops();
         this.spawnerDrops = DropsEditor.defaultDrop.getSpawnerDrops();
         this.eggDrops = DropsEditor.defaultDrop.getEggDrops();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public ItemStack getItem() {
@@ -46,11 +58,11 @@ public class ObjDrop {
         this.chance = chance;
     }
 
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
@@ -60,6 +72,14 @@ public class ObjDrop {
 
     public void setShape(FireworkEffect.Type shape) {
         this.shape = shape;
+    }
+
+    public boolean getEffect() {
+        return effect;
+    }
+
+    public void setEffect(boolean effect) {
+        this.effect = effect;
     }
 
     public boolean getDefaultDrops() {
@@ -92,5 +112,13 @@ public class ObjDrop {
 
     public void setConditions(ObjConditions conditions) {
         this.conditions = conditions;
+    }
+
+    public LinkedList<String> getCommands() {
+        return commands;
+    }
+
+    public void setCommands(LinkedList<String> commands) {
+        this.commands = commands;
     }
 }

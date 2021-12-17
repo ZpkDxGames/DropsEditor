@@ -1,15 +1,21 @@
 package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.ChatColor;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class LisInventory implements Listener {
     @EventHandler
@@ -19,7 +25,11 @@ public class LisInventory implements Listener {
         if (inventory == null || !inventoryView.getTitle().startsWith(ChatColor.DARK_GREEN + "[DropsEditor]")) {
             return;
         }
+
         event.setCancelled(true);
+        if (inventory.getType().equals(InventoryType.PLAYER)) {
+            return;
+        }
 
         if (!(event.getWhoClicked() instanceof Player)) {
             return;
@@ -62,13 +72,11 @@ public class LisInventory implements Listener {
                         return;
                     }
                     case "Next page": {
-                        int page = Integer.parseInt(inventory.getItem(inventory.getSize() - 2).getItemMeta().getDisplayName().substring(18));
-                        player.openInventory(UtiMenus.MobsMenu(page + 1));
+                        player.openInventory(UtiMenus.MobsMenu(Utilities.GetPage(inventory) + 1));
                         return;
                     }
                     case "Previous page": {
-                        int page = Integer.parseInt(inventory.getItem(inventory.getSize() - 2).getItemMeta().getDisplayName().substring(18));
-                        player.openInventory(UtiMenus.MobsMenu(page - 1));
+                        player.openInventory(UtiMenus.MobsMenu(Utilities.GetPage(inventory) - 1));
                         return;
                     }
                     default: {
@@ -99,18 +107,175 @@ public class LisInventory implements Listener {
                         return;
                     }
                     case "Toggle active worlds": {
-                        player.openInventory(UtiMenus.MobWorldsMenu(objMob));
+                        player.openInventory(UtiMenus.MobWorldsMenu(objMob, 1));
                         return;
                     }
                     case "Edit custom drops": {
-                        player.openInventory(UtiMenus.MobDropsMenu(objMob));
+                        player.openInventory(UtiMenus.MobDropsMenu(objMob, 1));
                         return;
                     }
                 }
             }
 
-            case "": {
+            case "Mob worlds": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
                 switch (clickedMeta.getDisplayName().substring(2)) {
+                    case "Go back": {
+                        player.openInventory(UtiMenus.MobSettingsMenu(objMob));
+                        return;
+                    }
+                    case "Next page": {
+                        player.openInventory(UtiMenus.MobWorldsMenu(objMob, Utilities.GetPage(inventory) + 1));
+                        return;
+                    }
+                    case "Previous page": {
+                        player.openInventory(UtiMenus.MobWorldsMenu(objMob, Utilities.GetPage(inventory) - 1));
+                        return;
+                    }
+                    default: {
+                        String worldName = clickedMeta.getDisplayName().substring(2).toLowerCase();
+                        World world = DropsEditor.plugin.getServer().getWorld(worldName);
+                        if (world == null) {
+                            return;
+                        }
+                        List<String> inactiveWorlds = objMob.getInactiveWorlds();
+                        if (inactiveWorlds.contains(worldName)) {
+                            inactiveWorlds.remove(worldName);
+                        } else {
+                            objMob.getInactiveWorlds().add(worldName);
+                        }
+                        objMob.setInactiveWorlds(inactiveWorlds);
+                        player.openInventory(UtiMenus.MobWorldsMenu(objMob, Utilities.GetPage(inventory)));
+                    }
+                }
+            }
+
+            case "Mob drops": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
+                String clickedItemName;
+                try {
+                    clickedItemName = clickedMeta.getDisplayName().substring(2);
+                } catch (Exception e) {
+                    clickedItemName = "---";
+                }
+                switch (clickedItemName) {
+                    case "Go back": {
+                        player.openInventory(UtiMenus.MobSettingsMenu(objMob));
+                        return;
+                    }
+                    case "Next page": {
+                        player.openInventory(UtiMenus.MobDropsMenu(objMob, Utilities.GetPage(inventory) + 1));
+                        return;
+                    }
+                    case "Previous page": {
+                        player.openInventory(UtiMenus.MobDropsMenu(objMob, Utilities.GetPage(inventory) - 1));
+                        return;
+                    }
+                    case "Add new item": {
+                        LinkedList<ObjDrop> drops = objMob.getDrops();
+                        drops.add(new ObjDrop(DropsEditor.defaultDrop.getItem()));
+                        objMob.setDrops(drops);
+                        player.openInventory(UtiMenus.MobDropsMenu(objMob, Utilities.GetPage(inventory)));
+                        return;
+                    }
+                    default: {
+                        int id = Utilities.GetDropId(clickedItem);
+                        ObjDrop drop = Utilities.FindDrop(objMob.getDrops(), id);
+                        if (drop == null) {
+                            return;
+                        }
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, drop));
+                        return;
+                    }
+                }
+            }
+
+            case "Drop settings": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
+                ObjDrop objDrop = Utilities.GetDropFromCorner(inventory);
+                try {
+                    clickedMeta.getDisplayName().substring(2);
+                } catch (Exception e) {
+                    return;
+                }
+                switch (clickedMeta.getDisplayName().substring(2)) {
+                    case "Go back": {
+                        player.openInventory(UtiMenus.MobDropsMenu(objMob, 1));
+                        return;
+                    }
+                    case "Change drop item": {
+                        player.openInventory(UtiMenus.ChangingDropItemMenu(objMob, objDrop, player));
+                        return;
+                    }
+                    case "Item drop chance": {
+
+                        return;
+                    }
+                    case "Drop conditions": {
+
+                        return;
+                    }
+                    case "Drop commands": {
+
+                        return;
+                    }
+                    case "Default mob drops": {
+                        objDrop.setDefaultDrops(!clickedItem.getType().equals(Material.LIME_CONCRETE));
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                    case "Spawner mob drops": {
+                        objDrop.setSpawnerDrops(!clickedItem.getType().equals(Material.LIME_CONCRETE));
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                    case "Spawner egg mob drops": {
+                        objDrop.setEggDrops(!clickedItem.getType().equals(Material.LIME_CONCRETE));
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                    case "Drop effect color": {
+                        String color = Utilities.GetColorFromLore(clickedMeta.getLore());
+                        objDrop.setColor(Utilities.GetNextColor(color));
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                    case "Drop effect shape": {
+                        FireworkEffect.Type type = Utilities.GetShapeFromLore(clickedMeta.getLore());
+                        objDrop.setShape(Utilities.GetNextShape(type));
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                    case "Toggle drop effects": {
+                        objDrop.setEffect(!clickedItem.getType().equals(Material.LIME_CONCRETE));
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                }
+            }
+
+            case "Drop item": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
+                ObjDrop objDrop = Utilities.GetDropFromCorner(inventory);
+                if (event.getSlot() < 9 || event.getSlot() > inventory.getSize() - 10) {
+                    if (clickedMeta.getDisplayName().substring(2).equals("Go back")) {
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                    }
+                    return;
+                }
+                objDrop.setItem(clickedItem.clone());
+                player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                return;
+            }
+
+            case "": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
+                ObjDrop objDrop = Utilities.GetDropFromCorner(inventory);
+                switch (clickedMeta.getDisplayName().substring(2)) {
+                    case "Go back": {
+                        player.openInventory(UtiMenus.MobsMenu(1));
+                        return;
+                    }
                     case "": {
 
                     }

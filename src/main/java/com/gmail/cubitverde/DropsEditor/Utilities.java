@@ -1,18 +1,18 @@
 package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.ChatColor;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Utilities {
+    static Map<UUID, ObjDrop> settingItem = new HashMap<>();
+
     static List<Integer> InventoryFrame(int size) {
         List<Integer> frame = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -139,11 +139,14 @@ public class Utilities {
         return objMob;
     }
 
-    static void AddCornerInfoItem(Inventory inventory, EntityType type) {
+    static void AddCornerInfoItem(Inventory inventory, EntityType type, ObjDrop drop) {
         ItemStack cornerItem = inventory.getItem(0);
         ItemMeta cornerMeta = cornerItem.getItemMeta();
         List<String> cornerLore = new ArrayList<>();
-        cornerLore.add(ChatColor.GRAY + "Editing mob: " + ChatColor.WHITE + type.toString());
+        cornerLore.add(ChatColor.DARK_GRAY + "Editing mob: " + ChatColor.GRAY + type.toString());
+        if (drop != null) {
+            cornerLore.add(ChatColor.DARK_GRAY + "Drop ID: " + ChatColor.GRAY + drop.getId());
+        }
         cornerMeta.setLore(cornerLore);
         cornerItem.setItemMeta(cornerMeta);
         cornerItem.setItemMeta(cornerMeta);
@@ -156,5 +159,103 @@ public class Utilities {
         List<String> cornerLore = cornerMeta.getLore();
         String mobType = cornerLore.get(0).substring(17);
         return GetObjMob(mobType);
+    }
+
+    static int GetPage(Inventory inventory) {
+        return Integer.parseInt(inventory.getItem(inventory.getSize() - 2).getItemMeta().getDisplayName().substring(18));
+    }
+
+    static int GetDropId(ItemStack item) {
+        try {
+            ItemMeta itemMeta = item.getItemMeta();
+            List<String> lore = itemMeta.getLore();
+            return Integer.parseInt(lore.get(lore.size() - 1).substring(13));
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    static ObjDrop FindDrop(LinkedList<ObjDrop> drops, int id) {
+        ObjDrop drop = null;
+        for (ObjDrop tempDrop : drops) {
+            if (tempDrop.getId() == id) {
+                drop = tempDrop;
+                break;
+            }
+        }
+        return drop;
+    }
+
+    static ObjDrop GetDropFromCorner(Inventory inventory) {
+        ItemStack cornerItem = inventory.getItem(0);
+        ItemMeta cornerMeta = cornerItem.getItemMeta();
+        List<String> cornerLore = cornerMeta.getLore();
+        int id = Integer.parseInt(cornerLore.get(1).substring(13));
+        ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
+        return FindDrop(objMob.getDrops(), id);
+    }
+
+    static String GetNextColor(String color) {
+        LinkedList<String> colors = new LinkedList<>();
+        colors.add("BLACK");
+        colors.add("BLUE");
+        colors.add("BROWN");
+        colors.add("CYAN");
+        colors.add("GRAY");
+        colors.add("GREEN");
+        colors.add("LIGHT_BLUE");
+        colors.add("LIGHT_GRAY");
+        colors.add("LIME");
+        colors.add("MAGENTA");
+        colors.add("ORANGE");
+        colors.add("PINK");
+        colors.add("PURPLE");
+        colors.add("RED");
+        colors.add("YELLOW");
+
+        int i = 0;
+        for (String tempColor : colors) {
+            if (tempColor.equals(color)) {
+                if (i == colors.size() - 1) {
+                    return colors.get(0);
+                } else {
+                    return colors.get(++i);
+                }
+            }
+            i++;
+        }
+
+        return null;
+    }
+
+    static String GetColorFromLore(List<String> lore) {
+        return lore.get(0).substring(26);
+    }
+
+    static FireworkEffect.Type GetNextShape(FireworkEffect.Type type) {
+        LinkedList<FireworkEffect.Type> types = new LinkedList<>();
+        types.add(FireworkEffect.Type.BURST);
+        types.add(FireworkEffect.Type.BALL_LARGE);
+        types.add(FireworkEffect.Type.BALL);
+        types.add(FireworkEffect.Type.STAR);
+        types.add(FireworkEffect.Type.CREEPER);
+
+        int i = 0;
+        for (FireworkEffect.Type tempType : types) {
+            if (tempType.equals(type)) {
+                if (tempType.equals(types.get(types.size() - 1))) {
+                    return types.get(0);
+                } else {
+                    return types.get(i + 1);
+                }
+            }
+            i++;
+        }
+
+        return null;
+    }
+
+    static FireworkEffect.Type GetShapeFromLore(List<String> lore) {
+        return FireworkEffect.Type.valueOf(lore.get(0).substring(26));
     }
 }

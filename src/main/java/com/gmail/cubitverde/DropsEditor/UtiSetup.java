@@ -101,11 +101,12 @@ public class UtiSetup {
     static void setupDefaultDrop() {
         DropsEditor.defaultDrop.setItem(Utilities.CreateNamedItem(Material.STONE, "New Item"));
         DropsEditor.defaultDrop.setChance(0.1);
-        DropsEditor.defaultDrop.setColor(Color.GREEN);
+        DropsEditor.defaultDrop.setColor("LIME");
         DropsEditor.defaultDrop.setShape(FireworkEffect.Type.BURST);
         DropsEditor.defaultDrop.setConditions(DropsEditor.defaultConditions);
         DropsEditor.defaultDrop.setDefaultDrops(true);
         DropsEditor.defaultDrop.setSpawnerDrops(false);
         DropsEditor.defaultDrop.setEggDrops(false);
+        DropsEditor.defaultDrop.setEffect(true);
     }
 }
