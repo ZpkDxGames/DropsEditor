@@ -8,15 +8,22 @@ import java.util.List;
 
 public class ObjMob {
     private EntityType type;
-    LinkedList<ObjDrop> drops;
-    boolean vanillaDrops;
-    List<String> inactiveWorlds;
+    private LinkedList<ObjDrop> drops;
+    private boolean vanillaDrops;
+    private List<String> inactiveWorlds;
 
     public ObjMob(EntityType type) {
         this.type = type;
         this.drops = new LinkedList<>();
         this.vanillaDrops = true;
         this.inactiveWorlds = new ArrayList<>();
+    }
+
+    public ObjMob(ObjMob objMob) {
+        this.type = objMob.getType();
+        this.drops = objMob.getDrops();
+        this.vanillaDrops = objMob.getVanillaDrops();
+        this.inactiveWorlds = objMob.getInactiveWorlds();
     }
 
     public EntityType getType() {

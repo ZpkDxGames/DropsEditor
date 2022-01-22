@@ -22,7 +22,7 @@ public class LisInventory implements Listener {
     private void setEvent (InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
         InventoryView inventoryView = event.getView();
-        if (inventory == null || !inventoryView.getTitle().startsWith(ChatColor.DARK_GREEN + "[DropsEditor]")) {
+        if (inventory == null || !inventoryView.getTitle().startsWith(ChatColor.DARK_GREEN + "[CustomDrops]")) {
             return;
         }
 
@@ -81,7 +81,7 @@ public class LisInventory implements Listener {
                     }
                     default: {
                         String mobName = clickedMeta.getDisplayName().substring(2);
-                        if (DropsEditor.mobIcons.keySet().contains(mobName)) {
+                        if (CustomDrops.mobIcons.keySet().contains(mobName)) {
                             ObjMob objMob = Utilities.GetObjMob(mobName);
                             player.openInventory(UtiMenus.MobSettingsMenu(objMob));
                         }
@@ -134,7 +134,7 @@ public class LisInventory implements Listener {
                     }
                     default: {
                         String worldName = clickedMeta.getDisplayName().substring(2).toLowerCase();
-                        World world = DropsEditor.plugin.getServer().getWorld(worldName);
+                        World world = CustomDrops.plugin.getServer().getWorld(worldName);
                         if (world == null) {
                             return;
                         }
@@ -173,7 +173,7 @@ public class LisInventory implements Listener {
                     }
                     case "Add new item": {
                         LinkedList<ObjDrop> drops = objMob.getDrops();
-                        drops.add(new ObjDrop(DropsEditor.defaultDrop.getItem()));
+                        drops.add(new ObjDrop(CustomDrops.defaultDrop.getItem()));
                         objMob.setDrops(drops);
                         player.openInventory(UtiMenus.MobDropsMenu(objMob, Utilities.GetPage(inventory)));
                         return;
@@ -208,7 +208,11 @@ public class LisInventory implements Listener {
                         return;
                     }
                     case "Item drop chance": {
-
+                        player.closeInventory();
+                        CustomDrops.settingChanceMob.put(player.getUniqueId(), objMob);
+                        CustomDrops.settingChanceDrop.put(player.getUniqueId(), objDrop);
+                        player.sendMessage(ChatColor.DARK_GREEN + "Type in chat the new " + ChatColor.GREEN + "drop chance " + ChatColor.DARK_GREEN + "you want this item to have.");
+                        player.sendMessage(ChatColor.DARK_GREEN + "It must be a number " + ChatColor.GREEN + "bewteen 0 and 1 " + ChatColor.DARK_GREEN + "(both included).");
                         return;
                     }
                     case "Drop conditions": {
@@ -216,7 +220,7 @@ public class LisInventory implements Listener {
                         return;
                     }
                     case "Drop commands": {
-
+                        player.openInventory(UtiMenus.DropCommandsMenu(objMob, objDrop, 1));
                         return;
                     }
                     case "Default mob drops": {
@@ -266,6 +270,59 @@ public class LisInventory implements Listener {
                 objDrop.setItem(clickedItem.clone());
                 player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
                 return;
+            }
+
+            case "Drop commands": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
+                ObjDrop objDrop = Utilities.GetDropFromCorner(inventory);
+                switch (clickedMeta.getDisplayName().substring(2)) {
+                    case "Go back": {
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                    case "Next page": {
+                        player.openInventory(UtiMenus.DropCommandsMenu(objMob, objDrop, Utilities.GetPage(inventory) + 1));
+                        return;
+                    }
+                    case "Previous page": {
+                        player.openInventory(UtiMenus.DropCommandsMenu(objMob, objDrop, Utilities.GetPage(inventory) - 1));
+                        return;
+                    }
+                    case "Add new command": {
+                        player.closeInventory();
+                        CustomDrops.addingCommandMob.put(player.getUniqueId(), objMob);
+                        CustomDrops.addingCommandDrop.put(player.getUniqueId(), objDrop);
+                        player.sendMessage(ChatColor.DARK_GREEN + "Type in chat the " + ChatColor.GREEN + "new command " + ChatColor.DARK_GREEN + "you want this drop to have.");
+                        player.sendMessage(ChatColor.DARK_GREEN + "The initial bar " + ChatColor.GREEN + "should not be included" + ChatColor.DARK_GREEN + ".");
+                        return;
+                    }
+                    default: {
+                        if (event.isShiftClick() && event.isRightClick()) {
+                            for (String command : objDrop.getCommands()) {
+                                if (command.toLowerCase().equals(clickedMeta.getDisplayName().substring(2).toLowerCase())) {
+                                    objDrop.getCommands().remove(command);
+                                    player.openInventory(UtiMenus.DropCommandsMenu(objMob, objDrop, Utilities.GetPage(inventory)));
+                                    break;
+                                }
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
+
+            case "Drop conditions": {
+                ObjMob objMob = Utilities.GetObjMobFromCorner(inventory);
+                ObjDrop objDrop = Utilities.GetDropFromCorner(inventory);
+                switch (clickedMeta.getDisplayName().substring(2)) {
+                    case "Go back": {
+                        player.openInventory(UtiMenus.DropSettingsMenu(objMob, objDrop));
+                        return;
+                    }
+                    case "": {
+
+                    }
+                }
             }
 
             case "": {

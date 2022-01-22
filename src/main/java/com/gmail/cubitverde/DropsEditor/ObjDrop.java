@@ -23,15 +23,29 @@ public class ObjDrop {
     }
 
     public ObjDrop(ItemStack item) {
-        this.id = DropsEditor.dropId++;
+        this.id = CustomDrops.dropId++;
         this.item = item;
-        this.chance = DropsEditor.defaultDrop.getChance();
-        this.color = DropsEditor.defaultDrop.getColor();
-        this.shape = DropsEditor.defaultDrop.getShape();
-        this.conditions = DropsEditor.defaultDrop.getConditions();
-        this.defaultDrops = DropsEditor.defaultDrop.getDefaultDrops();
-        this.spawnerDrops = DropsEditor.defaultDrop.getSpawnerDrops();
-        this.eggDrops = DropsEditor.defaultDrop.getEggDrops();
+        this.chance = CustomDrops.defaultDrop.getChance();
+        this.color = CustomDrops.defaultDrop.getColor();
+        this.shape = CustomDrops.defaultDrop.getShape();
+        this.effect = CustomDrops.defaultDrop.getEffect();
+        this.conditions = CustomDrops.defaultDrop.getConditions();
+        this.defaultDrops = CustomDrops.defaultDrop.getDefaultDrops();
+        this.spawnerDrops = CustomDrops.defaultDrop.getSpawnerDrops();
+        this.eggDrops = CustomDrops.defaultDrop.getEggDrops();
+        this.commands = CustomDrops.defaultDrop.getCommands();
+    }
+
+    public ObjDrop(ObjDrop objDrop) {
+        this.id = CustomDrops.dropId++;
+        this.item = objDrop.getItem();
+        this.chance = objDrop.getChance();
+        this.color = objDrop.getColor();
+        this.shape = objDrop.getShape();
+        this.conditions = objDrop.getConditions();
+        this.defaultDrops = objDrop.getDefaultDrops();
+        this.spawnerDrops = objDrop.getSpawnerDrops();
+        this.eggDrops = objDrop.getEggDrops();
     }
 
     public int getId() {

@@ -7,27 +7,31 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class DropsEditor extends JavaPlugin {
-    static DropsEditor plugin;
+public class CustomDrops extends JavaPlugin {
+    static CustomDrops plugin;
     static Map<String, Material> mobIcons = new HashMap<>();
     static List<ObjMob> editedMobs = new ArrayList<>();
     static ObjDrop defaultDrop = new ObjDrop();
     static ObjConditions defaultConditions = new ObjConditions();
     static int dropId = 0;
 
+    static Map<UUID, ObjMob> settingChanceMob = new HashMap<>();
+    static Map<UUID, ObjDrop> settingChanceDrop = new HashMap<>();
+    static Map<UUID, ObjMob> addingCommandMob = new HashMap<>();
+    static Map<UUID, ObjDrop> addingCommandDrop = new HashMap<>();
+
     @Override
     public void onEnable() {
         plugin = this;
         getServer().getPluginManager().registerEvents(new LisInventory(), this);
+        getServer().getPluginManager().registerEvents(new LisChat(), this);
 
         UtiSetup.setupMobIcons(plugin.getServer().getVersion());
         UtiSetup.setupDefaultConditions();
         UtiSetup.setupDefaultDrop();
+
     }
 
     @Override

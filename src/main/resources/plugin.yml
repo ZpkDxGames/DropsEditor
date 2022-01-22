@@ -1,12 +1,12 @@
-name: DropsEditor
+name: CustomDrops
 version: 0.1
 load: POSTWORLD
 author: cubito_verde
-main: com.gmail.cubitverde.DropsEditor.DropsEditor
-prefix: DropsEditor
+main: com.gmail.cubitverde.DropsEditor.CustomDrops
+prefix: CustomDrops
 api-version: 1.17
 
 commands:
-  dropseditor:
-    permission: dropseditor.admin
-    aliases: deditor
+  customdrops:
+    permission: customdrops.admin
+    aliases: cdrops

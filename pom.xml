@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.gmail.cubitverde.DropsEditor</groupId>
-    <artifactId>DropsEditor</artifactId>
+    <artifactId>CustomDrops</artifactId>
     <version>0.1</version>
 
     <build>
@@ -28,7 +28,7 @@
                         <phase>install</phase>
                         <configuration>
                             <target>
-                                <copy file="target/${project.artifactId}-${project.version}.jar" tofile="/Users/andres/Desktop/GitStuff/1TestServer/plugins/DropsEditor.jar"/>
+                                <copy file="target/${project.artifactId}-${project.version}.jar" tofile="/Users/andres/Desktop/GitStuff/1TestServer/plugins/CustomDrops.jar"/>
                             </target>
                         </configuration>
                         <goals>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

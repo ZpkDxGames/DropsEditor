@@ -1,6 +1,7 @@
 package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -11,7 +12,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.*;
 
 public class Utilities {
-    static Map<UUID, ObjDrop> settingItem = new HashMap<>();
 
     static List<Integer> InventoryFrame(int size) {
         List<Integer> frame = new ArrayList<>();
@@ -42,7 +42,7 @@ public class Utilities {
         return itemStack;
     }
 
-    static ItemStack CreateNamedItem(Material material, String name, List<String> lore) {
+    static ItemStack CreateNamedItem(Material material, String name, LinkedList<String> lore) {
         ItemStack itemStack = CreateNamedItem(material, name);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(lore);
@@ -62,7 +62,7 @@ public class Utilities {
         }
 
         {
-            List<String> lore = new ArrayList<>();
+            LinkedList<String> lore = new LinkedList<>();
             lore.add(ChatColor.DARK_GREEN + "Created by: " + ChatColor.GREEN + "cubito_verde");
             inventory.setItem(4, CreateNamedItem(Material.WHITE_STAINED_GLASS_PANE, ChatColor.GREEN + "[Drops Editor]", lore));
         }
@@ -74,15 +74,15 @@ public class Utilities {
 
     static LinkedList<ItemStack> GetMobItemsList() {
         LinkedList<ItemStack> list = new LinkedList<>();
-        LinkedList<String> namesList = new LinkedList<>(DropsEditor.mobIcons.keySet());
+        LinkedList<String> namesList = new LinkedList<>(CustomDrops.mobIcons.keySet());
         Collections.sort(namesList);
         for (String name : namesList) {
-            list.add(CreateNamedItem(DropsEditor.mobIcons.get(name), ChatColor.GREEN + name));
+            list.add(CreateNamedItem(CustomDrops.mobIcons.get(name), ChatColor.GREEN + name));
         }
         return list;
     }
 
-    static void OpenPagedMenu(Inventory inventory, LinkedList<ItemStack> items, int page, boolean addItems) {
+    static void OpenPagedMenu(Inventory inventory, LinkedList<ItemStack> items, int page, boolean addItems, String addNew) {
         LinkedList<Integer> inventoryInside = InventoryInside(inventory.getSize());
         int inventorySize = inventory.getSize();
         int inventoryInsideSize = inventoryInside.size();
@@ -93,7 +93,7 @@ public class Utilities {
         for (int i = 0; i < inventoryInsideSize; i++) {
             if (startSlot + i >= listSize) {
                 if (addItems) {
-                    inventory.setItem(inventoryInside.get(i), CreateNamedItem(Material.LIME_DYE, ChatColor.GREEN + "Add new item"));
+                    inventory.setItem(inventoryInside.get(i), CreateNamedItem(Material.LIME_DYE, ChatColor.GREEN + "Add new " + addNew));
                 }
                 break;
             }
@@ -128,14 +128,14 @@ public class Utilities {
 
     static ObjMob GetObjMob(String name) {
         EntityType type = ConvertNameToType(name);
-        for (ObjMob tempObjMob : DropsEditor.editedMobs) {
+        for (ObjMob tempObjMob : CustomDrops.editedMobs) {
             if (tempObjMob.getType().equals(type)) {
                 return tempObjMob;
             }
         }
 
         ObjMob objMob = new ObjMob(type);
-        DropsEditor.editedMobs.add(objMob);
+        CustomDrops.editedMobs.add(objMob);
         return objMob;
     }
 
@@ -211,6 +211,7 @@ public class Utilities {
         colors.add("PINK");
         colors.add("PURPLE");
         colors.add("RED");
+        colors.add("WHITE");
         colors.add("YELLOW");
 
         int i = 0;
@@ -257,5 +258,61 @@ public class Utilities {
 
     static FireworkEffect.Type GetShapeFromLore(List<String> lore) {
         return FireworkEffect.Type.valueOf(lore.get(0).substring(26));
+    }
+
+    static Color GetColorFromString(String colorString) {
+        String string = colorString.toLowerCase();
+        switch (string) {
+            case "black": {
+                return Color.fromBGR(33, 29, 29);
+            }
+            case "blue": {
+                return Color.fromBGR(169, 68, 60);
+            }
+            case "brown": {
+                return Color.fromBGR(50, 84, 130);
+            }
+            case "cyan": {
+                return Color.fromBGR(157, 156, 22);
+            }
+            case "gray": {
+                return Color.fromBGR(82, 79, 71);
+            }
+            case "green": {
+                return Color.fromBGR(21, 124, 93);
+            }
+            case "light_blue": {
+                return Color.fromBGR(218, 179, 58);
+            }
+            case "light_gray": {
+                return Color.fromBGR(151, 157, 156);
+            }
+            case "lime": {
+                return Color.fromBGR(31, 199, 128);
+            }
+            case "magenta": {
+                return Color.fromBGR(189, 79, 198);
+            }
+            case "orange": {
+                return Color.fromBGR(29, 128, 249);
+            }
+            case "pink": {
+                return Color.fromBGR(170, 140, 243);
+            }
+            case "purple": {
+                return Color.fromBGR(183, 50, 137);
+            }
+            case "red": {
+                return Color.fromBGR(38, 46, 176);
+            }
+            case "white": {
+                return Color.fromBGR(255, 255, 249);
+            }
+            case "yellow": {
+                return Color.fromBGR(61, 216, 255);
+            }
+        }
+
+        return null;
     }
 }
