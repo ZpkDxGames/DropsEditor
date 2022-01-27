@@ -1,9 +1,12 @@
 package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -19,6 +22,7 @@ public class LisMobdeath implements Listener {
         EntityType entityType = event.getEntityType();
         LivingEntity entity = event.getEntity();
         List<ItemStack> drops = event.getDrops();
+        Player killer = entity.getKiller();
 
         ObjMob mob = null;
         for (ObjMob tempMob : CustomDrops.editedMobs) {
@@ -46,11 +50,17 @@ public class LisMobdeath implements Listener {
                 continue;
             }
 
-            // SPAWNER MOB / EGG MOB / ETC
+            if (!objDrop.getSpawnerDrops() && CustomDrops.spawnerMobs.contains(entity.getUniqueId())) {
+                continue;
+            } else if (!objDrop.getEggDrops() && CustomDrops.spawnereggMobs.contains(entity.getUniqueId())) {
+                continue;
+            }
 
-            // CONDITIONS
+            // OTHER CONDITIONS
 
-            drops.add(objDrop.getItem());
+            if (!objDrop.getItem().getType().equals(Material.BARRIER)) {
+                drops.add(objDrop.getItem());
+            }
 
             if (objDrop.getEffect()) {
                 Firework firework = (Firework) entity.getLocation().getWorld().spawnEntity(entity.getLocation(), EntityType.FIREWORK);
@@ -59,9 +69,16 @@ public class LisMobdeath implements Listener {
                 fireworkMeta.addEffect(FireworkEffect.builder().withColor(Utilities.GetColorFromString(objDrop.getColor())).with(objDrop.getShape()).build());
                 firework.setFireworkMeta(fireworkMeta);
                 firework.detonate();
+                CustomDrops.dropFireworks.add(firework);
             }
 
-            // COMMANDS
+            for (String command : objDrop.getCommands()) {
+                CommandSender sender = CustomDrops.plugin.getServer().getConsoleSender();
+
+                // ADD PLACEHOLDERS
+
+                CustomDrops.plugin.getServer().dispatchCommand(sender, command);
+            }
 
         }
     }
