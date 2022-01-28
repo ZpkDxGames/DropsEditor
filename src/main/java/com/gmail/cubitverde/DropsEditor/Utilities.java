@@ -1,10 +1,8 @@
 package com.gmail.cubitverde.DropsEditor;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -314,5 +312,62 @@ public class Utilities {
         }
 
         return null;
+    }
+
+    static List<String> readCommandPlaceholders(String command, Player player, Location location) {
+        List<String> returnCommands = new ArrayList<>();
+        Map<Integer, Integer> placeholders = new HashMap<>();
+        Map<Integer, Integer> placeholdersAll = new HashMap<>();
+
+        for (int i = 0; i < command.length(); i++) {
+            if (command.charAt(i) == '<') {
+                for (int j = i + 1; j < command.length(); j++) {
+                    if (command.charAt(j) == '>') {
+                        placeholders.put(i, j);
+                        i = j;
+                        break;
+                    }
+                }
+            }
+        }
+
+        int offset = 0;
+        for (int i : placeholders.keySet()) {
+            int j = placeholders.get(i);
+            switch (command.substring(i + 1 + offset, j + offset)) {
+                case "player": {
+                    if (player == null) {
+                        return null;
+                    }
+                    command = command.substring(0, i + offset) + player.getName() + command.substring(j + 1 + offset);
+                    offset = offset - 8 + player.getName().length();
+                    break;
+                }
+                case "coords": {
+                    String locString = location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ();
+                    command = command.substring(0, i + offset) + locString + command.substring(j + 1 + offset);
+                    offset = offset - 8 + locString.length();
+                    break;
+                }
+                case "all": {
+                    placeholdersAll.put(i, j);
+                    break;
+                }
+            }
+        }
+
+        for (int i : placeholdersAll.keySet()) {
+            int j = placeholdersAll.get(i);
+            for (Player onlinePlayer : CustomDrops.plugin.getServer().getOnlinePlayers()) {
+                String newCommand = command.substring(0, i + offset) + onlinePlayer.getName() + command.substring(j + 1 + offset);
+                returnCommands.add(newCommand);
+            }
+        }
+
+        if (placeholdersAll.keySet().size() == 0) {
+            returnCommands.add(command);
+        }
+
+        return returnCommands;
     }
 }

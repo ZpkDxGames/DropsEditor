@@ -294,6 +294,10 @@ public class LisInventory implements Listener {
                         CustomDrops.addingCommandDrop.put(player.getUniqueId(), objDrop);
                         player.sendMessage(ChatColor.DARK_GREEN + "Type in chat the " + ChatColor.GREEN + "new command " + ChatColor.DARK_GREEN + "you want this drop to have.");
                         player.sendMessage(ChatColor.DARK_GREEN + "The initial bar " + ChatColor.GREEN + "should not be included" + ChatColor.DARK_GREEN + ".");
+                        player.sendMessage(ChatColor.DARK_GREEN + "The following placeholders are supported:");
+                        player.sendMessage(ChatColor.DARK_GREEN + "- " + ChatColor.GREEN + "<player>" + ChatColor.DARK_GREEN + ": Name of the player that killed the mob.");
+                        player.sendMessage(ChatColor.DARK_GREEN + "- " + ChatColor.GREEN + "<coords>" + ChatColor.DARK_GREEN + ": Coordinates of the mob location.");
+                        player.sendMessage(ChatColor.DARK_GREEN + "- " + ChatColor.GREEN + "<all>" + ChatColor.DARK_GREEN + ": Name of all online players.");
                         return;
                     }
                     default: {

@@ -1,6 +1,7 @@
 package com.gmail.cubitverde.DropsEditor;
 
 import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -23,6 +24,7 @@ public class LisMobdeath implements Listener {
         LivingEntity entity = event.getEntity();
         List<ItemStack> drops = event.getDrops();
         Player killer = entity.getKiller();
+        Location location = entity.getLocation();
 
         ObjMob mob = null;
         for (ObjMob tempMob : CustomDrops.editedMobs) {
@@ -63,7 +65,7 @@ public class LisMobdeath implements Listener {
             }
 
             if (objDrop.getEffect()) {
-                Firework firework = (Firework) entity.getLocation().getWorld().spawnEntity(entity.getLocation(), EntityType.FIREWORK);
+                Firework firework = (Firework) entity.getLocation().getWorld().spawnEntity(location, EntityType.FIREWORK);
                 FireworkMeta fireworkMeta = firework.getFireworkMeta();
                 fireworkMeta.setPower(0);
                 fireworkMeta.addEffect(FireworkEffect.builder().withColor(Utilities.GetColorFromString(objDrop.getColor())).with(objDrop.getShape()).build());
@@ -75,9 +77,13 @@ public class LisMobdeath implements Listener {
             for (String command : objDrop.getCommands()) {
                 CommandSender sender = CustomDrops.plugin.getServer().getConsoleSender();
 
-                // ADD PLACEHOLDERS
-
-                CustomDrops.plugin.getServer().dispatchCommand(sender, command);
+                List<String> runCommands = Utilities.readCommandPlaceholders(command, killer, location);
+                if (runCommands == null) {
+                    continue;
+                }
+                for (String runCommand : runCommands) {
+                    CustomDrops.plugin.getServer().dispatchCommand(sender, runCommand);
+                }
             }
 
         }
