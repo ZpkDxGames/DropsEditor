@@ -83,7 +83,6 @@ public class UtiSetup {
 
         } else if (version.contains("1.18")) {
             setupMobIcons("1.17");
-
         }
     }
 

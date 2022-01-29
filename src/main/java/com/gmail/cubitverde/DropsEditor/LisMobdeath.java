@@ -61,7 +61,7 @@ public class LisMobdeath implements Listener {
             // OTHER CONDITIONS
 
             if (!objDrop.getItem().getType().equals(Material.BARRIER)) {
-                drops.add(objDrop.getItem());
+                drops.add(objDrop.getItem().clone());
             }
 
             if (objDrop.getEffect()) {
